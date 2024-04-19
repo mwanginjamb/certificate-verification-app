@@ -3,6 +3,8 @@
 namespace common\models;
 
 use Yii;
+use yii\behaviors\BlameableBehavior;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "certificates".
@@ -33,6 +35,14 @@ class Certificates extends \yii\db\ActiveRecord
         return 'certificates';
     }
 
+    public function behaviors()
+    {
+        return [
+            BlameableBehavior::class,
+            TimestampBehavior::class
+        ];
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -41,6 +51,7 @@ class Certificates extends \yii\db\ActiveRecord
         return [
             [['program_id', 'created_at', 'updated_at', 'updated_by', 'created_by', 'deleted_at', 'deleted_by'], 'integer'],
             [['issue_date'], 'safe'],
+            [['certificate_id'], 'string'],
             [['student_name'], 'string', 'max' => 250],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['created_by' => 'id']],
             [['deleted_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['deleted_by' => 'id']],
@@ -56,6 +67,7 @@ class Certificates extends \yii\db\ActiveRecord
     {
         return [
             'id' => Yii::t('app', 'ID'),
+            'certificate_id' => Yii::t('app', 'Certificate_id'),
             'program_id' => Yii::t('app', 'Program ID'),
             'student_name' => Yii::t('app', 'Student Name'),
             'issue_date' => Yii::t('app', 'Issue Date'),

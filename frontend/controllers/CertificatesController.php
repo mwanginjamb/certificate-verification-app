@@ -5,6 +5,7 @@ namespace frontend\controllers;
 use Yii;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 use common\models\Certificates;
 use yii\web\NotFoundHttpException;
 use common\models\CertificatesSearch;
@@ -23,14 +24,34 @@ class CertificatesController extends Controller
             parent::behaviors(),
             [
                 'verbs' => [
-                    'class' => VerbFilter::className(),
+                    'class' => VerbFilter::class,
                     'actions' => [
                         'delete' => ['POST'],
+                        'verify' => ['POST'],
                     ],
                 ],
+                'access' => [
+                    'class' => AccessControl::class,
+                    'only' => [
+                        'index', 'create', 'update', 'delete', 'view', 'verify'
+                    ],
+                    'rules' => [
+                        [ // unauthenticated users
+                            'actions' => ['signup', 'verify'],
+                            'allow' => true,
+                            'roles' => ['?'],
+                        ],
+                        [ // logged in users
+                            'actions' => ['index', 'create', 'update', 'delete', 'view'],
+                            'allow' => true,
+                            'roles' => ['@'],
+                        ],
+                    ],
+                ]
             ]
         );
     }
+
 
     /**
      * Lists all Certificates models.
@@ -41,6 +62,9 @@ class CertificatesController extends Controller
     {
         $searchModel = new CertificatesSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
+
+        $dataProvider->pagination->pageSize = 15;
+        $dataProvider->sort->defaultOrder = ['id' => SORT_DESC];
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -58,6 +82,17 @@ class CertificatesController extends Controller
     {
         return $this->render('view', [
             'model' => $this->findModel($id),
+        ]);
+    }
+
+    public function actionVerify()
+    {
+        $this->layout = 'plain';
+        $searchId = Yii::$app->request->post('serial');
+        $results = Certificates::find()->with('program')->where(['certificate_id' => $searchId])->one();
+
+        return $this->render('verify', [
+            'result' => $results
         ]);
     }
 

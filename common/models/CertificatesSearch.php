@@ -18,7 +18,7 @@ class CertificatesSearch extends Certificates
     {
         return [
             [['id', 'program_id', 'created_at', 'updated_at', 'updated_by', 'created_by', 'deleted_at', 'deleted_by'], 'integer'],
-            [['student_name', 'issue_date'], 'safe'],
+            [['student_name', 'issue_date', 'certificate_id'], 'safe'],
         ];
     }
 
@@ -59,6 +59,7 @@ class CertificatesSearch extends Certificates
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
+            'certificate_id' => $this->certificate_id,
             'program_id' => $this->program_id,
             'issue_date' => $this->issue_date,
             'created_at' => $this->created_at,
