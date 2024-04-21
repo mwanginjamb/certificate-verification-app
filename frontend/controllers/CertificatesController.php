@@ -2,13 +2,16 @@
 
 namespace frontend\controllers;
 
+use common\models\CertificateImport;
 use Yii;
 use yii\web\Controller;
+use yii\web\UploadedFile;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use common\models\Certificates;
 use yii\web\NotFoundHttpException;
 use common\models\CertificatesSearch;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 /**
  * CertificatesController implements the CRUD actions for Certificates model.
@@ -90,6 +93,11 @@ class CertificatesController extends Controller
         $this->layout = 'plain';
         $searchId = Yii::$app->request->post('serial');
         $results = Certificates::find()->with('program')->where(['certificate_id' => $searchId])->one();
+        if ($results) {
+            Yii::$app->session->setFlash('success', 'Certificate is valid and below are the regitimate details. ');
+        } else {
+            Yii::$app->session->setFlash('error', 'Certificate number doe not represent a validly issued certificate at KGS. ');
+        }
 
         return $this->render('verify', [
             'result' => $results

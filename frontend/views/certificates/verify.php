@@ -6,6 +6,8 @@ use yii\bootstrap5\Html;
 use yii\helpers\Url;
 
 $this->title = Yii::$app->name;
+
+
 ?>
 
 <div class="container mt-5">
@@ -14,47 +16,65 @@ $this->title = Yii::$app->name;
         <p class="text-muted">KEMRI GRADUATE SCHOOL CERTIFICATES VERIFICATION PORTAL.</p>
     </section>
 
+    <div class="row">
+        <?php
+        if (Yii::$app->session->hasFlash('error')) {
+            echo '<div class="alert alert-danger role="alert">
+            ' . Yii::$app->session->getFlash('error') . '
+        </div>';
+        } elseif (Yii::$app->session->hasFlash('success')) {
+            echo '<div class="alert alert-success role="alert">
+            ' . Yii::$app->session->getFlash('success') . '
+        </div>';
+        }
+        ?>
+    </div>
+
 
     <div class="row">
-        <div class="col-md-6">
-            <h3 class="text text-primary fw-bold my-3">Program</h3>
-            <table class="table table-bordered">
-                <tr>
-                    <td class="fw-bold">Program</td>
-                    <td><?= $result->program->name ?></td>
-                </tr>
-                <tr>
-                    <td class="fw-bold">Description</td>
-                    <td><?= $result->program->description ?></td>
-                </tr>
-                <tr>
-                    <td class="fw-bold">Start Date</td>
-                    <td><?= $result->program->start_date ?></td>
-                </tr>
-                <tr>
-                    <td class="fw-bold">End Date</td>
-                    <td><?= $result->program->end_date ?></td>
-                </tr>
-            </table>
-        </div>
-        <div class="col-md-6">
-            <h3 class="text text-primary fw-bold my-3">Certificate Details</h3>
-            <table class="table table-bordered">
-                <tr>
-                    <td class="fw-bold">Name</td>
-                    <td><?= $result->student_name ?></td>
-                </tr>
-                <tr>
-                    <td class="fw-bold">Certificate Issue Date</td>
-                    <td><?= $result->issue_date ?></td>
-                </tr>
-                <tr>
-                    <td class="fw-bold">Certificate ID</td>
-                    <td><?= $result->certificate_id ?></td>
-                </tr>
 
-            </table>
-        </div>
+        <?php if (!is_null($result)) : ?>
+            <div class="col-md-6">
+                <h3 class="text text-primary fw-bold my-3">Program</h3>
+                <table class="table table-bordered">
+                    <tr>
+                        <td class="fw-bold">Program</td>
+                        <td><?= $result->program->name ?></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Description</td>
+                        <td><?= $result->program->description ?></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Start Date</td>
+                        <td><?= $result->program->start_date ?></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">End Date</td>
+                        <td><?= $result->program->end_date ?></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <h3 class="text text-primary fw-bold my-3">Certificate Details</h3>
+                <table class="table table-bordered">
+                    <tr>
+                        <td class="fw-bold">Name</td>
+                        <td><?= $result->student_name ?></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Certificate Issue Date</td>
+                        <td><?= $result->issue_date ?></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Certificate ID</td>
+                        <td><?= $result->certificate_id ?></td>
+                    </tr>
+
+                </table>
+            </div>
+
+        <?php endif; ?>
     </div>
 </div>
 <?php
