@@ -49,6 +49,8 @@ class Certificates extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            // [['program_id'], 'required'],
+            ['certificate_id', 'unique'],
             [['program_id', 'created_at', 'updated_at', 'updated_by', 'created_by', 'deleted_at', 'deleted_by'], 'integer'],
             [['issue_date'], 'safe'],
             [['certificate_id'], 'string'],

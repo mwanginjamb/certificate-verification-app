@@ -13,6 +13,7 @@ use common\models\ProgramSearch;
 use yii\web\NotFoundHttpException;
 use common\models\CertificateImport;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use yii\helpers\ArrayHelper;
 
 /**
  * ProgramController implements the CRUD actions for Program model.
@@ -157,7 +158,7 @@ class ProgramController extends Controller
                 // Extract data from  uploaded file
                 $sheetData = $this->extractData($uploadedFile);
                 // save the data
-                $this->saveData($sheetData);
+                $this->saveData($sheetData, $model->programID);
             } else {
                 $this->redirect(['excel-import']);
             }
@@ -173,74 +174,40 @@ class ProgramController extends Controller
         return $sheetData;
     }
 
-    private function saveData($sheetData)
+    private function saveData($sheetData, $programID)
     {
-        $ImportedAccounts = Certificates::find()->select(['certificate_id'])->AsArray()->all();
+        $Importedcertificates = ArrayHelper::index(Certificates::find()->select(['certificate_id'])->AsArray()->all(), 'certificate_id');
 
-        /*print '<pre>';
-        print_r($sheetData);
-        exit;*/
-        $today = date('Y-m-d');
-        $rowOffset = 2;
+
+        $rowOffset = 1;
         foreach ($sheetData as $key => $data) {
-            // Read from 3rd row
-            if ($key >= 3) {
-                if (trim($data['C']) !== '') {
+            // Read from 2nd row
+            if ($key !== 1) {
+                if (!is_null($data['A'])) {
                     $model = new Certificates();
 
                     // Try find an existing model for Update
 
-                    $accountModel = Certificates::findOne(['certificate_id' => $data['C']]);
-
-
-                    if ($accountModel && $accountModel->AccountNumber == $data['C']) {
+                    $certificateModel = Certificates::findOne(['certificate_id' => $data['C']]);
 
 
 
-                        $accountModel->AccountName = $data['D'];
-                        $accountModel->AccountNumber =  $data['C'];
-                        $accountModel->BankID = (trim($data['E'])  !== '' && $this->getBankID($data['E'])) ? $this->getBankID($data['E']) : 0;
-                        $accountModel->BranchID =  (trim($data['F']) !== '' && $this->getBranchID($data['F'])) ? $this->getBranchID($data['F']) : 0;
-                        $accountModel->BankTypeID = (trim($data['G']) !== '' && $this->getBankTypeID($data['G'])) ? $this->getBankTypeID($data['G']) : 0;
-                        $accountModel->Notes = (trim($data['H']) !== '') ? $data['H'] : '';
-                        $accountModel->CountyID = (trim($data['I']) !== '' && $this->getCountyID($data['I'])) ? $this->getCountyID($data['I']) : 0;
-                        $accountModel->CommunityID = (trim($data['J']) !== '' && $this->getCommunityID($data['J'])) ? $this->getCommunityID($data['J']) : 0;
-                        $accountModel->ProjectID = (trim($data['K']) !== '' && $this->getProjectID($data['K'])) ? $this->getProjectID($data['K']) : 0;
-                        $accountModel->CreatedBy = Yii::$app->user->identity->UserID;
-                        $accountModel->CreatedDate = $today;
-
-                        if (!$accountModel->save()) {
-                            foreach ($accountModel->errors as $k => $v) {
-                                Yii::$app->session->setFlash('error', $v[0] . ' <b>Update Error :Got value</b>: <i><u>' . $accountModel->$k . '</u> <b>for Account Name:' . $data['C'] . '</b> - On Row:</b>  ' . ($key - $rowOffset));
-                            }
-                        } else {
-                            Yii::$app->session->setFlash('success', 'Congratulations, all valid records are completely updated .');
-                        }
-                    } else {
-
-                        if (in_array($data['C'], $ImportedAccounts)) {
-                            continue;
-                        }
-
-                        $model->AccountName = $data['D'];
-                        $model->AccountNumber =  $data['C'];
-                        $model->BankID = (trim($data['E'])  !== '' && $this->getBankID($data['E'])) ? $this->getBankID($data['E']) : 0;
-                        $model->BranchID =  (trim($data['F']) !== '' && $this->getBranchID($data['F'])) ? $this->getBranchID($data['F']) : 0;
-                        $model->BankTypeID = (trim($data['G']) !== '' && $this->getBankTypeID($data['G'])) ? $this->getBankTypeID($data['G']) : 0;
-                        $model->Notes = (trim($data['H']) !== '') ? $data['H'] : '';
-                        $model->CountyID = (trim($data['I']) !== '' && $this->getCountyID($data['I'])) ? $this->getCountyID($data['I']) : 0;
-                        $model->CommunityID = (trim($data['J']) !== '' && $this->getCommunityID($data['J'])) ? $this->getCommunityID($data['J']) : 0;
-                        $model->ProjectID = (trim($data['K']) !== '' && $this->getProjectID($data['K'])) ? $this->getProjectID($data['K']) : 0;
-                        $model->CreatedBy = Yii::$app->user->identity->UserID;
-                        $model->CreatedDate = $today;
+                    $model = new Certificates();
+                    if (in_array(trim($data['C']), $Importedcertificates)) {
+                        continue;
                     }
+
+                    $model->program_id = $programID ?? 2;
+                    $model->student_name = $data['A'] ?? '';
+                    $model->issue_date = $data['B'] ?? '';
+                    $model->certificate_id = $data['C'] ?? '';
 
                     if (!$model->save()) {
                         foreach ($model->errors as $k => $v) {
-                            Yii::$app->session->setFlash('error', $v[0] . ' <b>Got value</b>: <i><u>' . $model->$k . '</u> <b>for Account Name:' . $data['C'] . '</b> - On Row:</b>  ' . ($key - $rowOffset));
+                            Yii::$app->session->setFlash('error', $v[0] . ' <b>Got value</b>: <i><u>' . $model->$k . '</u> <b>for certificate Name:' . $data['C'] . '</b> - On Row:</b>  ' . ($key - $rowOffset) . '  ' . $data['A']);
                         }
                     } else {
-                        Yii::$app->session->setFlash('success', 'Congratulations, all valid records are completely imported into MIS.');
+                        Yii::$app->session->setFlash('success', 'Congratulations, all valid records are completely imported into the system.');
                     }
                 }
             }
