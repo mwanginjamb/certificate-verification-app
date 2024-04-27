@@ -8,12 +8,13 @@ use yii\web\UploadedFile;
 use common\models\Program;
 use yii\filters\VerbFilter;
 
+use yii\helpers\ArrayHelper;
+use yii\filters\AccessControl;
 use common\models\Certificates;
 use common\models\ProgramSearch;
 use yii\web\NotFoundHttpException;
 use common\models\CertificateImport;
 use PhpOffice\PhpSpreadsheet\IOFactory;
-use yii\helpers\ArrayHelper;
 
 /**
  * ProgramController implements the CRUD actions for Program model.
@@ -34,6 +35,24 @@ class ProgramController extends Controller
                         'delete' => ['POST'],
                     ],
                 ],
+                'access' => [
+                    'class' => AccessControl::class,
+                    'only' => [
+                        'index', 'create', 'update', 'delete', 'view', 'verify'
+                    ],
+                    'rules' => [
+                        [ // unauthenticated users
+                            'actions' => ['signup', 'verify'],
+                            'allow' => true,
+                            'roles' => ['?'],
+                        ],
+                        [ // logged in users
+                            'actions' => ['index', 'create', 'update', 'delete', 'view'],
+                            'allow' => true,
+                            'roles' => ['@'],
+                        ],
+                    ],
+                ]
             ]
         );
     }

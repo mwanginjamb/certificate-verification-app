@@ -51,6 +51,9 @@ return [
             'showScriptName' => false,
             'rules' => [],
         ],
+        'utility' => [
+            'class' => 'common\Library\Utility',
+        ],
 
     ],
     'params' => $params,
