@@ -33,7 +33,7 @@ class VerifyEmailForm extends Model
         }
         $this->_user = User::findByVerificationToken($token);
         if (!$this->_user) {
-            throw new InvalidArgumentException('Wrong verify email token.');
+            throw new InvalidArgumentException('Wrong verify email token : ' . $token);
         }
         parent::__construct($config);
     }

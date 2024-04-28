@@ -14,7 +14,9 @@ use yii\bootstrap5\Breadcrumbs;
 
 //GuestAsset::register($this);
 AppAsset::register($this);
-$imageUrl = Url::home(true) . 'images/kemri-logo.png'; //Yii::getAlias('@backend/web/images/kemri-logo.png');
+$imageUrl = Url::home(true) . 'images/kemri-logo.png';
+$bgUrl = Url::home(true) . 'images/mypassword.png';
+$fUrl = Url::home(true) . 'images/forgotpassword.png';
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -62,11 +64,15 @@ $imageUrl = Url::home(true) . 'images/kemri-logo.png'; //Yii::getAlias('@backend
                             <div class="row px-3 justify-content-center mt-4 mb-5 border-line">
                                 <?php if (Yii::$app->utility->currentaction('site', 'request-password-reset')) : ?>
                                     <div class="w-50 p-3">
-                                        <img src="@web/images/undraw-forgot-password.svg" class="img-fluid" />
+                                        <img src="<?= $bgUrl ?>" class="img-fluid" />
                                     </div>
                                 <?php elseif (Yii::$app->utility->currentaction('site', 'resend-verification-email')) : ?>
                                     <div class="w-50 p-3">
-                                        <img src="@web/images/undraw_resend-token.svg" class="img-fluid" />
+                                        <img src="<?= $fUrl ?>" class="img-fluid" />
+                                    </div>
+                                <?php elseif (Yii::$app->utility->currentaction('site', 'reset-password')) : ?>
+                                    <div class="w-50 p-3">
+                                        <img src="<?= $bgUrl ?>" class="img-fluid" />
                                     </div>
                                 <?php else : ?>
                                     <img src="https://i.imgur.com/uNGdWHi.png" class="image">
@@ -98,6 +104,7 @@ $imageUrl = Url::home(true) . 'images/kemri-logo.png'; //Yii::getAlias('@backend
                                 <small class="or text-center">Or</small>
                                 <div class="line"></div>
                             </div> -->
+                                <?= Alert::widget() ?>
                                 <?= $content ?>
                             </div>
 

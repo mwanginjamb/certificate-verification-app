@@ -49,6 +49,7 @@ return [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
+            //'homeUrl' => 'program/index',
             'rules' => [],
         ],
         'utility' => [

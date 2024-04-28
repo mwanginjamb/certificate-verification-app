@@ -3,6 +3,22 @@
 /** @var yii\web\View $this */
 
 $this->title = 'My Yii Application';
+
+if (Yii::$app->session->hasFlash('success')) {
+    print ' <div class="alert alert-success alert-dismissable role="alert">
+                             <button type="button"  class="btn-close" data-bs-dismiss="alert" aria-hidden="true"></button>
+                             <h5><i class="bi bi-check-circle"></i> Success!</h5>
+ ';
+    echo Yii::$app->session->getFlash('success');
+    print '</div>';
+} else if (Yii::$app->session->hasFlash('error')) {
+    print ' <div class="alert alert-danger alert-dismissable role="alert">
+                                 <button type="button"  class="btn-close" data-bs-dismiss="alert" aria-hidden="true"></button>
+                                 <h5><i class="bi bi-x-circle"></i> Error!</h5>
+                                ';
+    echo Yii::$app->session->getFlash('error');
+    print '</div>';
+}
 ?>
 <div class="site-index">
 

@@ -61,8 +61,9 @@ if (Yii::$app->session->hasFlash('success')) {
         ],
     ]) ?>
 
+    <div class="p text fw-bold display-4 my-3">Issued Certificates</div>
     <?php if ($model->certificates) : ?>
-        <table class="table table-bordered">
+        <table class="table table-bordered" id="certs">
 
             <thead>
                 <tr>
@@ -84,3 +85,10 @@ if (Yii::$app->session->hasFlash('success')) {
     <?php endif; ?>
 
 </div>
+
+<?php
+
+$js = <<<JS
+  $('#certs').DataTable();
+JS;
+$this->registerJs($js);

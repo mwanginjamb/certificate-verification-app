@@ -29,15 +29,17 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['logout', 'signup'],
+                'only' => [
+                    'index', 'create', 'update', 'delete', 'view', 'verify'
+                ],
                 'rules' => [
-                    [
-                        'actions' => ['signup'],
+                    [ // unauthenticated users
+                        'actions' => ['signup', 'verify'],
                         'allow' => true,
                         'roles' => ['?'],
                     ],
-                    [
-                        'actions' => ['logout'],
+                    [ // logged in users
+                        'actions' => ['index', 'create', 'update', 'delete', 'view'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -88,16 +90,18 @@ class SiteController extends Controller
     {
         $this->layout = 'guest';
         if (!Yii::$app->user->isGuest) {
+            // exit('conndition one ...');
             return $this->goHome();
         }
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+            $this->redirect(['program/index']);
+            //return $this->goBack();
         }
 
         $model->password = '';
-
+        //exit('conndition three ...');
         return $this->render('login', [
             'model' => $model,
         ]);
@@ -200,6 +204,7 @@ class SiteController extends Controller
      */
     public function actionResetPassword($token)
     {
+        $this->layout = 'guest';
         try {
             $model = new ResetPasswordForm($token);
         } catch (InvalidArgumentException $e) {
@@ -237,7 +242,7 @@ class SiteController extends Controller
             return $this->goHome();
         }
 
-        Yii::$app->session->setFlash('error', 'Sorry, we are unable to verify your account with provided token.');
+        Yii::$app->session->setFlash('error', 'Sorry, we are unable to verify your account with provided token: ' . $token);
         return $this->goHome();
     }
 
