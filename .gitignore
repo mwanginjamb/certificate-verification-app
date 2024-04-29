@@ -43,7 +43,7 @@ phpunit.phar
 /backend/web/robots.txt
 
 
-*.xlsx
-/backend/web/templates
+#*.xlsx
+#/backend/web/templates
 
 .env
