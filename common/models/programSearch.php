@@ -9,7 +9,7 @@ use common\models\program;
 /**
  * programSearch represents the model behind the search form of `common\models\program`.
  */
-class programSearch extends program
+class ProgramSearch extends program
 {
     /**
      * {@inheritdoc}

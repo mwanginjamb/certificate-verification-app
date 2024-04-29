@@ -77,8 +77,7 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        $this->layout = 'plain';
-        return $this->render('index');
+        return $this->redirect(['program/index']);
     }
 
     /**
