@@ -45,3 +45,5 @@ phpunit.phar
 
 *.xlsx
 /backend/web/templates
+
+.env
