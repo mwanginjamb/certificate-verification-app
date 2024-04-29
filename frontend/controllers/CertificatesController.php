@@ -96,7 +96,7 @@ class CertificatesController extends Controller
         if ($results) {
             Yii::$app->session->setFlash('success', 'Certificate is valid and below are the regitimate details. ');
         } else {
-            Yii::$app->session->setFlash('error', 'Certificate number doe not represent a validly issued certificate at KGS. ');
+            Yii::$app->session->setFlash('error', 'Certificate number does not represent a validly issued certificate at KGS. ');
         }
 
         return $this->render('verify', [
