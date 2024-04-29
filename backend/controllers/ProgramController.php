@@ -3,11 +3,12 @@
 namespace backend\controllers;
 
 use Yii;
+use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\UploadedFile;
 use common\models\Program;
-use yii\filters\VerbFilter;
 
+use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use yii\filters\AccessControl;
 use common\models\Certificates;
@@ -234,5 +235,23 @@ class ProgramController extends Controller
 
 
         return $this->redirect(['index']);
+    }
+    public function actionDownload()
+    {
+        // Define the path to the template file
+        $templateFilePath = Yii::getAlias('@webroot/templates/template.xlsx');
+
+        // Check if the file exists before proceeding
+        if (file_exists($templateFilePath)) {
+            // Set response headers for file download
+            Yii::$app->response->sendFile($templateFilePath, 'template.xlsx', [
+                'mimeType' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            ]);
+        } else {
+            // Handle the case where the template file doesn't exist
+            Yii::$app->session->setFlash('error', 'Template file not found.');
+            // Redirect or display an error message
+            Yii::$app->getResponse()->redirect(['program/index']);
+        }
     }
 }

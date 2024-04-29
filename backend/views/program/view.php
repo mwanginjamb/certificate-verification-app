@@ -42,6 +42,7 @@ if (Yii::$app->session->hasFlash('success')) {
             ],
         ]) ?>
         <?= Html::a(Yii::t('app', 'Import Certificates'), ['excel-import', 'programID' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a(Yii::t('app', 'Download Certificates Template'), ['download'], ['class' => 'btn btn-warning']) ?>
     </p>
 
     <?= DetailView::widget([
@@ -61,8 +62,8 @@ if (Yii::$app->session->hasFlash('success')) {
         ],
     ]) ?>
 
-    <div class="p text fw-bold display-4 my-3">Issued Certificates</div>
     <?php if ($model->certificates) : ?>
+        <div class="p text fw-bold display-4 my-3">Issued Certificates</div>
         <table class="table table-bordered" id="certs">
 
             <thead>
@@ -82,6 +83,8 @@ if (Yii::$app->session->hasFlash('success')) {
                 <?php endforeach; ?>
             </tbody>
         </table>
+    <?php else : ?>
+        <div class="alert alert-info">No certificated issued yet for this program. Use the <b>downloadable</b> template above to import some.</div>
     <?php endif; ?>
 
 </div>

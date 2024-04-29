@@ -104,7 +104,8 @@ $fUrl = Url::home(true) . 'images/forgotpassword.png';
                                 <small class="or text-center">Or</small>
                                 <div class="line"></div>
                             </div> -->
-                                <?= Alert::widget() ?>
+                                <?php //Alert::widget() 
+                                ?>
                                 <?= $content ?>
                             </div>
 
