@@ -177,6 +177,7 @@ class ProgramController extends Controller
             if ($uploadedFile = $model->upload()) {
                 // Extract data from  uploaded file
                 $sheetData = $this->extractData($uploadedFile);
+                unlink($uploadedFile);
                 // save the data
                 $this->saveData($sheetData, $model->programID);
             } else {
@@ -196,28 +197,25 @@ class ProgramController extends Controller
 
     private function saveData($sheetData, $programID)
     {
-        $Importedcertificates = ArrayHelper::index(Certificates::find()->select(['certificate_id'])->AsArray()->all(), 'certificate_id');
 
+        $Importedcertificates = ArrayHelper::index(Certificates::find()->select(['certificate_id'])->where(['program_id' => $programID])->AsArray()->all(), 'certificate_id');
+        $existing = array_keys($Importedcertificates);
 
         $rowOffset = 1;
-        foreach ($sheetData as $key => $data) {
+
+        $filteredArray = array_filter($sheetData, function ($item) use ($existing) {
+            return !in_array($item['C'], $existing) && !is_null($item['C']);
+        });
+
+
+        foreach ($filteredArray as $key => $data) {
             // Read from 2nd row
             if ($key !== 1) {
                 if (!is_null($data['A'])) {
-                    $model = new Certificates();
-
-                    // Try find an existing model for Update
-
-                    $certificateModel = Certificates::findOne(['certificate_id' => $data['C']]);
-
-
 
                     $model = new Certificates();
-                    if (in_array(trim($data['C']), $Importedcertificates)) {
-                        continue;
-                    }
 
-                    $model->program_id = $programID ?? 2;
+                    $model->program_id = $programID;
                     $model->student_name = $data['A'] ?? '';
                     $model->issue_date = $data['B'] ?? '';
                     $model->certificate_id = $data['C'] ?? '';
@@ -231,10 +229,13 @@ class ProgramController extends Controller
                     }
                 }
             }
+            if (count($existing)) {
+                Yii::$app->session->setFlash('error', count($existing) . ' duplication conflicts were found on your import.');
+            }
         }
 
 
-        return $this->redirect(['index']);
+        return $this->redirect(['view', 'id' => $programID]);
     }
     public function actionDownload()
     {

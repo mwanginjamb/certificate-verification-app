@@ -49,8 +49,7 @@ class Certificates extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            // [['program_id'], 'required'],
-            ['certificate_id', 'unique'],
+            [['program_id'], 'required'],
             [['program_id', 'created_at', 'updated_at', 'updated_by', 'created_by', 'deleted_at', 'deleted_by'], 'integer'],
             [['issue_date'], 'safe'],
             [['certificate_id'], 'string'],
@@ -59,6 +58,7 @@ class Certificates extends \yii\db\ActiveRecord
             [['deleted_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['deleted_by' => 'id']],
             [['program_id'], 'exist', 'skipOnError' => true, 'targetClass' => Program::class, 'targetAttribute' => ['program_id' => 'id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['updated_by' => 'id']],
+
         ];
     }
 
