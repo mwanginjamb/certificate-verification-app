@@ -39,6 +39,8 @@ $this->params['breadcrumbs'][] = $this->title;
             <?php $form = ActiveForm::begin(['id' => 'login-form']); ?>
             <?php $form->errorSummary($model) ?>
 
+            <?= Html::hiddenInput(['autocomplete' => false]) ?>
+
             <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
 
             <?= $form->field($model, 'password')->passwordInput() ?>

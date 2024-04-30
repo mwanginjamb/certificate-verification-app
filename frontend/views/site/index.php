@@ -16,7 +16,7 @@ $this->title = Yii::$app->name;
     <form action="<?= Url::toRoute(['certificates/verify'], $schema = true) ?>" method="post" class="mt-4">
         <div class="input-group mb-3">
             <?= Html::hiddenInput(Yii::$app->request->csrfParam, Yii::$app->request->csrfToken) ?>
-            <input type="text" autocomplete="false" required class="form-control form-control-lg" name="serial" placeholder="Enter Certificate number to verify.">
+            <input type="text" autocomplete="off" required class="form-control form-control-lg" name="serial" placeholder="Enter Certificate number to verify.">
             <button class="btn btn-primary" type="submit">Search</button>
         </div>
     </form>
