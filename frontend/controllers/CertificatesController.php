@@ -2,14 +2,16 @@
 
 namespace frontend\controllers;
 
-use common\models\CertificateImport;
 use Yii;
+use yii\helpers\Url;
 use yii\web\Controller;
+use yii\bootstrap5\Html;
 use yii\web\UploadedFile;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use common\models\Certificates;
 use yii\web\NotFoundHttpException;
+use common\models\CertificateImport;
 use common\models\CertificatesSearch;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
@@ -93,10 +95,11 @@ class CertificatesController extends Controller
         $this->layout = 'plain';
         $searchId = Yii::$app->request->post('serial');
         $results = Certificates::find()->with('program')->where(['certificate_id' => $searchId])->one();
+        $link = Html::a('Another Verification?', Url::toRoute(['site/index']));
         if ($results) {
-            Yii::$app->session->setFlash('success', 'Certificate is valid and below are the regitimate details. ');
+            Yii::$app->session->setFlash('success', 'Certificate is valid and below are the regitimate details. ' . $link);
         } else {
-            Yii::$app->session->setFlash('error', 'Certificate number does not represent a validly issued certificate at KGS. ');
+            Yii::$app->session->setFlash('error', 'Certificate number does not represent a validly issued certificate at KGS. ' . $link);
         }
 
         return $this->render('verify', [

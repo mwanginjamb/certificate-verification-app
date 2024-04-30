@@ -4,12 +4,12 @@ namespace common\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\program;
+use common\models\Program;
 
 /**
- * programSearch represents the model behind the search form of `common\models\program`.
+ * ProgramSearch represents the model behind the search form of `common\models\Program`.
  */
-class ProgramSearch extends program
+class ProgramSearch extends Program
 {
     /**
      * {@inheritdoc}
@@ -40,7 +40,7 @@ class ProgramSearch extends program
      */
     public function search($params)
     {
-        $query = program::find();
+        $query = Program::find();
 
         // add conditions that should always apply here
 
