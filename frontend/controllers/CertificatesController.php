@@ -97,7 +97,7 @@ class CertificatesController extends Controller
         $results = Certificates::find()->with('program')->where(['certificate_id' => $searchId])->one();
         $link = Html::a('Another Verification?', Url::toRoute(['site/index']));
         if ($results) {
-            Yii::$app->session->setFlash('success', 'Certificate is valid and below are the regitimate details. ' . $link);
+            Yii::$app->session->setFlash('success', 'Certificate is valid and below are the legitimate details. ' . $link);
         } else {
             Yii::$app->session->setFlash('error', 'Certificate number does not represent a validly issued certificate at KGS. ' . $link);
         }
